@@ -12,6 +12,12 @@
   "permissions": [
     "https://open.spotify.com/",
     "https://spotify.com/"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://open.spotify.com/*"],
+      "js": ["scripts/testscript.js"],
+      "run_at": "document_end"
+    }
   ]
-
 }
