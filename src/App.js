@@ -1,4 +1,6 @@
 import './App.css';
+import SpotifyButton from "./components/spotifyButton";
+import React from "react";
 
 function App() {
     const CLIENT_ID = "239ae9d556f74055af35304e818d9ae6"
@@ -22,12 +24,18 @@ function App() {
     //     })
     // }
 
+    const test = () => {
+        alert("anan")
+    }
+
     return (
         <div className="App">
-            <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>
-                Login to Spotify
-            </a>
-
+            {/*<a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>*/}
+            {/*    Login to Spotify*/}
+            {/*</a>*/}
+            <div style={{height:500}} >
+                <SpotifyButton name="Bu bir deneme" func={test}/>
+            </div>
         </div>
     );
 }
