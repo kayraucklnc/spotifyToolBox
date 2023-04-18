@@ -1,4 +1,6 @@
 import './App.css';
+import './components/SpotifyButton';
+import SpotifyButton from "./components/SpotifyButton";
 
 function App() {
     const CLIENT_ID = "239ae9d556f74055af35304e818d9ae6"
@@ -21,15 +23,20 @@ function App() {
     //             })
     //     })
     // }
-
+    const handleClick = () => {
+        alert('Button clicked!');
+    };
     return (
         <div className="App">
             <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>
                 Login to Spotify
             </a>
+            <SpotifyButton label="KAYRA!" onClick={handleClick} />
 
         </div>
     );
 }
+
+
 
 export default App;
