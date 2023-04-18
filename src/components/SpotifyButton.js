@@ -1,9 +1,9 @@
 import React from 'react';
 
-const SpotifyButton = ({ label, onClick }) => {
+const SpotifyButton = (props) => {
     console.log("button");
     return (
-        <button onClick={onClick}>{label}</button>
+        <button onClick={props.onClick}>{props.label}</button>
     );
 };
 
