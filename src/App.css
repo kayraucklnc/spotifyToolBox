@@ -1,0 +1,47 @@
+@font-face {
+  font-family: 'GothamMedium';
+  src: url('/public/fonts/GothamMedium_1.ttf') format('truetype');
+}@font-face {
+  font-family: 'GothamLight';
+  src: url('/public/fonts/GothamLight.ttf') format('truetype');
+}
+@font-face {
+  font-family: Spotify Circular Light;
+  src: url('/public/fonts/CircularSpUIv3T-Light.woff2');
+}
+
+@font-face {
+  font-family: Spotify Circular Bold;
+  src: url('/public/fonts/CircularSpUIv3T-Bold.woff2');
+}
+
+@font-face {
+  font-family: Spotify Circular Book;
+  src: url('/public/fonts/CircularSpUIv3T-Book.woff2');
+}
+
+@font-face {
+  font-family: Spoticon;
+  src: url('/public/fonts/spoticon_regular_2.woff2');
+}
+.App {
+  text-align: center;
+  font-family: 'GothamMedium', sans-serif;
+}
+
+
+.App-header {
+  background-color: #212121;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #b3b3b3;
+}
+
+.App-link {
+  color: #61dafb;
+}
+

@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Spotify Extension",
+  "version": "1.0.1",
+  "icons": {
+    "48": "./images/spotify.png"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open the popup"
+  },
+  "permissions": [
+    "https://open.spotify.com/",
+    "https://spotify.com/"
+  ]
+
+}
