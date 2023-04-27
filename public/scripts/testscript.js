@@ -10,10 +10,49 @@ newDiv.className = "anan"
 // Add the new div element to the Spotify web player's body element
 document.body.appendChild(newDiv);
 
+window.onload = () => {
 
+    let allTitles = document.querySelectorAll(".t_yrXoUO3qGsJS4Y6iXX div");
+    let allArtists = document.querySelectorAll(".rq2VQ5mb9SDAFWbBIUIn");
+    let allAlbums = document.querySelectorAll(".bfQ2S9bMXr_kJjqEfcwA a");
+    let allDurations = document.querySelectorAll(".HcMOFLaukKJdK5LfdHh0 div");
 
-a = document.querySelector("#main > div > div.Root__top-container.Root__top-container--right-sidebar-hidden > div.Root__main-view > div.main-view-container > div.os-host.os-host-foreign.os-theme-spotify.os-host-resize-disabled.os-host-scrollbar-horizontal-hidden.main-view-container__scroll-node.os-host-transition.os-host-overflow.os-host-overflow-y > div.os-padding > div > div > div.main-view-container__scroll-node-child > main > div.GlueDropTarget.GlueDropTarget--tracks.GlueDropTarget--local-tracks.GlueDropTarget--episodes.GlueDropTarget--albums > section > div.contentSpacing.NXiYChVp4Oydfxd7rT5r.RMDSGDMFrx8eXHpFphqG > div.RP2rRchy4i8TIp1CTmb7 > span.rEN7ncpaUeSGL9z0NGQR > button > span > h1")
-console.log(a.innerHTML)
+// Create an empty array to hold data
+    let jsonData = [];
 
-console.log(a.innerHTML)
-console.log("deneme")
+// Loop through data and push to the array
+    for (let i = 0; i < allTitles.length; i++) {
+        let temp = [];
+        let artists = allArtists[i].getElementsByTagName("a");
+        Array.from(artists).forEach(element => {
+            temp.push(element.innerHTML);
+        });
+        let item = {
+            title: allTitles[i].innerHTML,
+            artists: temp,
+            album: allAlbums[i].innerHTML,
+            duration: allDurations[i+1].innerHTML,
+        };
+        jsonData.push(item);
+    }
+
+// Convert array to JSON string
+    let jsonString = JSON.stringify(jsonData);
+
+// Create a Blob with the JSON string
+    let blob = new Blob([jsonString], { type: "application/json" });
+
+// Create a download link
+    let downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "data.json";
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+
+// Trigger download
+    downloadLink.click();
+
+// Clean up
+    document.body.removeChild(downloadLink);
+
+}
