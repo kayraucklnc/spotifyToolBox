@@ -11,13 +11,14 @@
   },
   "permissions": [
     "https://open.spotify.com/",
-    "https://spotify.com/"
+    "https://spotify.com/",
+    "activeTab",
+    "tabs"
   ],
   "content_scripts": [
     {
-      "matches": ["https://open.spotify.com/*"],
-      "js": ["scripts/testscript.js"],
-      "run_at": "document_end"
+      "matches": ["https://open.spotify.com/playlist/*"],
+      "js": ["scripts/testscript.js"]
     }
   ]
 }
