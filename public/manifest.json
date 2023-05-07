@@ -11,7 +11,8 @@
   },
   "permissions": [
     "https://open.spotify.com/",
-    "https://spotify.com/"
+    "https://spotify.com/",
+    "tabs"
   ],
   "content_scripts": [
     {
