@@ -15,6 +15,14 @@ function addSubElement(targetElement) {
 
 setTimeout(start, 2000);
 
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    if (message.action === 'triggerFunction') {
+        // Call the desired function in the content script
+        setTimeout(start, 1000);
+    }
+});
+
+
 function start(){
     let targetElement = getMusicListHolder();
     addSubElement(targetElement);
