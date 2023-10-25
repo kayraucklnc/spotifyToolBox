@@ -31,9 +31,9 @@ function LoginButton() {
             <div className="spotify-logo"/>
             <h2>Welcome to Spotify Toolbox!</h2>
             <p>Press the button to login and unlock the features!</p>
-            <button onClick={handleLogin}>
+            <a onClick={handleLogin}>
                 Login with Spotify
-            </button>
+            </a>
         </div>
     )
 
