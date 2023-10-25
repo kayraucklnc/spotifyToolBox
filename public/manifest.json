@@ -12,6 +12,7 @@
   "permissions": [
     "https://open.spotify.com/",
     "https://spotify.com/",
+    "activeTab",
     "tabs"
   ],
   "background": {
@@ -19,9 +20,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://open.spotify.com/*"],
-      "js": ["scripts/testscript.js", "scripts/youtubeAdder.js"],
-      "run_at": "document_end"
+      "matches": ["https://open.spotify.com/playlist/*"],
+      "js": ["scripts/testscript.js", "scripts/youtubeAdder.js"]
     }
   ]
 }
