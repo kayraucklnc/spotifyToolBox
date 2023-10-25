@@ -18,16 +18,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://open.spotify.com/*",
-        "https://open.spotify.com/",
-        "https://spotify.com/"
-      ],
-      "js": [
-        "scripts/testscript.js",
-        "scripts/youtubeAdder.js"
-      ],
-      "run_at": "document_end"
+      "matches": ["https://open.spotify.com/playlist/*"],
+      "js": ["scripts/testscript.js", "scripts/youtubeAdder.js"]
     }
   ]
 }
