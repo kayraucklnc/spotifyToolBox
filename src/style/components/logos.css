@@ -5,3 +5,11 @@
     background-size: cover;
     margin: 15px 0;
 }
+
+.youtube-logo {
+    height: 49px;
+    width:150px;
+    background: url('/public/images/youtube.ico') center center  no-repeat;
+    background-size: cover;
+    margin: 15px 0;
+}
