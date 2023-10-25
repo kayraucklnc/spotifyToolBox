@@ -10,8 +10,6 @@
     "default_title": "Open the popup"
   },
   "permissions": [
-    "https://open.spotify.com/",
-    "https://spotify.com/",
     "tabs",
     "scripting"
   ],
@@ -20,8 +18,15 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://open.spotify.com/*"],
-      "js": ["scripts/testscript.js", "scripts/youtubeAdder.js"],
+      "matches": [
+        "https://open.spotify.com/*",
+        "https://open.spotify.com/",
+        "https://spotify.com/"
+      ],
+      "js": [
+        "scripts/testscript.js",
+        "scripts/youtubeAdder.js"
+      ],
       "run_at": "document_end"
     }
   ]
