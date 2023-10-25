@@ -1,0 +1,29 @@
+@import "../index.css";
+button {
+    border:none;
+    outline: none;
+    display: inline-block;
+    margin: 15px;
+    padding:15px 20px;
+    color: #191414;
+    background-color: #1db954;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-family: "Spotify Circular Bold";
+    font-size: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 15px;
+    padding: 20px;
+    margin: 10px 5px;
+}
+

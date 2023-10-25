@@ -1,12 +1,7 @@
-import './App.css';
-import './components/SpotifyButton';
-import SpotifyButton from "./components/SpotifyButton";
+import './style/index.css';
+import LoginButton from "./components/Login";
 
 function App() {
-    const CLIENT_ID = "239ae9d556f74055af35304e818d9ae6"
-    const REDIRECT_URI = "http://localhost:3000"
-    const AUTH_ENDPOINT = "https://accounts.spotify.com/api/token"
-    const RESPONSE_TYPE = "token"
 
     // const [token, setToken] = useState("")
     // const [searchKey, setSearchKey] = useState("")
@@ -28,10 +23,7 @@ function App() {
     };
     return (
         <div className="App">
-            <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>
-                Login to Spotify
-            </a>
-            <SpotifyButton label="KAYRA!" onClick={handleClick} />
+            <LoginButton/>
 
         </div>
     );
