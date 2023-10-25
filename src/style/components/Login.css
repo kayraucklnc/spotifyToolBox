@@ -1,5 +1,5 @@
 @import "../index.css";
-button {
+a {
     border:none;
     outline: none;
     display: inline-block;
@@ -15,7 +15,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+a:hover {
     transform: scale(1.03);
 }
 .login{
