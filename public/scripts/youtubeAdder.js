@@ -70,13 +70,14 @@ function addButton(elem) {
 }
 
 function addLink(targetElement, href) {
-    const linkElement = document.createElement('div');
+    const linkElement = document.createElement('a');
     linkElement.draggable = true;
     linkElement.classList.add("standalone-ellipsis-one-line", "ytbutton", "youtube-logo");
     linkElement.setAttribute('dir', 'auto');
     linkElement.href = href;
     linkElement.tabIndex = -1;
-
+    linkElement.textContent = "Youtube ▶"
+    linkElement.style.color = "#ff0000"
 
     targetElement.appendChild(linkElement);
 }
