@@ -1,6 +1,6 @@
 /*global chrome*/
 import "../style/components/Login.css";
-import "../style/components/SpotifyLogo.css";
+import "../style/components/logos.css";
 
 function LoginButton() {
 
