@@ -68,19 +68,25 @@ function addButton(elem) {
     let songNameElement = elem.children[0].children[1]
     addCheckbox(songNameElement, songName)
     addLink(songNameElement, "https://www.youtube.com/results?search_query=" + nameArr.join("+"))
+
+    addHoverButton(songNameElement, 'ⓘ');
 }
 
 function addLink(targetElement, href) {
-    const linkElement = document.createElement('a');
+    const linkElementWrapper = document.createElement('a');
+    const linkElement = document.createElement('img');
+    linkElementWrapper.appendChild(linkElement);
+
+    linkElement.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png";
     linkElement.draggable = true;
+    linkElement.style.height = "20px";
     linkElement.classList.add("standalone-ellipsis-one-line", "ytbutton", "youtube-logo");
     linkElement.setAttribute('dir', 'auto');
-    linkElement.href = href;
     linkElement.tabIndex = -1;
-    linkElement.textContent = "Youtube ▶"
     linkElement.style.color = "#ff0000"
 
-    targetElement.appendChild(linkElement);
+    linkElementWrapper.href = href;
+    targetElement.appendChild(linkElementWrapper);
 }
 
 function addCheckbox(targetElement, songName) {
@@ -88,6 +94,51 @@ function addCheckbox(targetElement, songName) {
     checkboxElement.type = 'checkbox';
     checkboxElement.classList.add('checkbox');
     checkboxElement.id = songName;
+    checkboxElement.style.accentColor = '#1DB954';
 
     targetElement.appendChild(checkboxElement);
+}
+
+function addHoverButton(targetElement, buttonText) {
+    const overlayContent = document.createElement('div');
+    overlayContent.innerHTML = "This is a lorem ipsum text.";
+    overlayContent.style.margin = '10px';
+    overlayContent.style.color = 'white';
+    overlayContent.style.fontWeight = 'bold';
+
+
+    const buttonElement = document.createElement('div');
+    buttonElement.innerText = buttonText;
+    buttonElement.style.color = 'white'
+
+    // Create overlay element
+    const overlayElement = document.createElement('div');
+
+    overlayElement.style.position = 'absolute';
+    overlayElement.style.backgroundColor = '#1DB954';
+    overlayElement.style.borderRadius = '20px';
+    overlayElement.style.transition = '.3s ease-in-out';
+    overlayElement.style.width = '300px';
+    overlayElement.style.height = '200px';
+    overlayElement.style.zIndex = '1';
+    overlayElement.style.left = '25%';
+    overlayElement.style.top = '90%';
+    overlayElement.style.display = 'none';
+
+    overlayElement.appendChild(overlayContent);
+
+    // Add event listeners for hover
+    buttonElement.addEventListener('mouseenter', () => {
+        overlayElement.style.display = 'block';
+        buttonElement.style.color = '#1DB954'
+    });
+
+    buttonElement.addEventListener('mouseleave', () => {
+        overlayElement.style.display = 'none';
+        buttonElement.style.color = 'white'
+    });
+
+    // Append button and overlay to the target element
+    targetElement.appendChild(buttonElement);
+    targetElement.appendChild(overlayElement);
 }
