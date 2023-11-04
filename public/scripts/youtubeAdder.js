@@ -129,7 +129,7 @@ function addHoverButton(targetElement, buttonText, songWrapper) {
     overlayElement.style.backgroundColor = '#1DB954';
     overlayElement.style.borderRadius = '5px 30px 30px 30px';
     overlayElement.style.transition = '.3s ease-in-out';
-    overlayElement.style.width = '200px';
+    overlayElement.style.width = '0px';
     overlayElement.style.height = '0px';
     overlayElement.style.zIndex = '1';
     overlayElement.style.left = '300px';
@@ -143,11 +143,13 @@ function addHoverButton(targetElement, buttonText, songWrapper) {
     // Add event listeners for hover
     buttonElement.addEventListener('mouseenter', () => {
         buttonElement.style.color = '#1DB954'
-        overlayElement.style.height = '200px';
+        overlayElement.style.width = '200px';
+        overlayElement.style.height = '220px';
     });
 
     buttonElement.addEventListener('mouseleave', () => {
         overlayElement.style.height = '0px';
+        overlayElement.style.width = '0px';
         buttonElement.style.color = 'white'
     });
 
