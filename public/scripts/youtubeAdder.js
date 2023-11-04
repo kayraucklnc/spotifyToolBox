@@ -66,6 +66,7 @@ function addButton(elem) {
     console.log(songName);
     nameArr = songName.split()
     let songNameElement = elem.children[0].children[1]
+    addCheckbox(songNameElement, songName)
     addLink(songNameElement, "https://www.youtube.com/results?search_query=" + nameArr.join("+"))
 }
 
@@ -80,4 +81,13 @@ function addLink(targetElement, href) {
     linkElement.style.color = "#ff0000"
 
     targetElement.appendChild(linkElement);
+}
+
+function addCheckbox(targetElement, songName) {
+    const checkboxElement = document.createElement('input');
+    checkboxElement.type = 'checkbox';
+    checkboxElement.classList.add('checkbox');
+    checkboxElement.id = songName;
+
+    targetElement.appendChild(checkboxElement);
 }
