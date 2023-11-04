@@ -153,6 +153,7 @@ function addHoverButton(targetElement, buttonText, songWrapper) {
 
     // Append button and overlay to the target element
     targetElement.appendChild(buttonElement);
+    overlayElement.style.left = buttonElement.getBoundingClientRect().left - 450 + 'px';
     targetElement.appendChild(overlayElement);
 }
 
