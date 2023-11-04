@@ -22,6 +22,10 @@
       "matches": ["<all_urls>"],
       "js": ["scripts/youtubeAdder.js"],
       "run_at": "document_end"
+    },
+    {
+      "matches": ["https://open.spotify.com/playlist/*"],
+      "js": ["scripts/playlistOperations.js"]
     }
   ]
 }
