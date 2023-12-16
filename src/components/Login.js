@@ -1,10 +1,11 @@
 /*global chrome*/
 import "../style/components/Login.css";
 import "../style/components/logos.css";
+import {useState} from "react";
 
 function LoginButton() {
 
-    const clientId = '239ae9d556f74055af35304e818d9ae6';
+    const clientId = 'c9c3145563c64380abab5d1ee47fdd09';
     const redirectUri = 'https://open.spotify.com/';
     const authEndpoint = "https://accounts.spotify.com/authorize"
     const scopes = [
@@ -16,6 +17,8 @@ function LoginButton() {
         "user-top-read",
         "user-modify-playback-state",
         "playlist-read-private",
+        "playlist-modify-private",
+        "playlist-modify-public",
         "user-library-read",
         "streaming"
     ]
@@ -36,7 +39,6 @@ function LoginButton() {
             </a>
         </div>
     )
-
 }
 
 export default LoginButton;
