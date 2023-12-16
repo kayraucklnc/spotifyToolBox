@@ -1,5 +1,4 @@
 /*global chrome*/
-// Content script code
 
 /**
  * Retrieves an access token from Spotify's API using client credentials.
