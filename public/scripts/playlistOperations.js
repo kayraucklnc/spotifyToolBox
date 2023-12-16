@@ -13,32 +13,31 @@ chrome.storage.local.get(["accessToken"]).then(result => {
     localAccessToken = result.accessToken;
 })
 async function getAccessToken() {
+    const clientID = '95a834e74870414da4c4fe63d3153de6';
+    const clientSecret = 'ee5e6d4f94a04f838119c28e3aabd16a';
+    let accessToken = 'deneme';
 
-    // const clientID = '95a834e74870414da4c4fe63d3153de6';
-    // const clientSecret = 'ee5e6d4f94a04f838119c28e3aabd16a';
-    // let accessToken = 'deneme';
-    //
-    // const data = {
-    //     grant_type: 'client_credentials',
-    //     client_id: clientID,
-    //     client_secret: clientSecret
-    // };
-    //
-    // const response = await fetch('https://accounts.spotify.com/api/token', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/x-www-form-urlencoded'
-    //     },
-    //     body: new URLSearchParams(data)
-    // });
-    // const responseData = await response.json();
-    // return responseData.access_token;
-    let localAccessToken = "";
-    chrome.storage.local.get(["accessToken"]).then(result => {
-        console.log(result.accessToken);
-        localAccessToken = result.accessToken;
-    })
-    return localAccessToken;
+    const data = {
+        grant_type: 'client_credentials',
+        client_id: clientID,
+        client_secret: clientSecret
+    };
+
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(data)
+    });
+    const responseData = await response.json();
+    return responseData.access_token;
+    // let localAccessToken = "";
+    // chrome.storage.local.get(["accessToken"]).then(result => {
+    //     console.log(result.accessToken);
+    //     localAccessToken = result.accessToken;
+    // })
+    // return localAccessToken;
 }
 
 // Retrieves playlist from SpotifyAPI via accessToken and playlistID.
@@ -141,6 +140,32 @@ async function deleteSongsViaAPI(request){
     }));
 }
 
+async function addCheckedSongsToBasket(){
+    const checkedSongs = getCheckedSongs();
+    const songs = [];
+
+    for(let i = 0; i < checkedSongs.length; i++){
+        console.log(checkedSongs[i]);
+        const response = await fetch(`https://api.spotify.com/v1/tracks/${checkedSongs[i]}`, {
+            headers: {
+                'Authorization': `Bearer ${localAccessToken}`
+            }
+        });
+
+        const songData = await response.json();
+
+        const song = {
+            imageUrl: songData.album.images[0].url,
+            name: songData.name,
+            artist: songData.artists.map(artist => artist.name)
+        }
+
+        console.log(song);
+        songs.push(song);
+    }
+    chrome.runtime.sendMessage({ action: "addSongsToBasketReturn", checkedSongs: songs });
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(request.action);
     if (request.action === 'downloadJson') {
@@ -151,5 +176,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     else if(request.action === 'setAccessToken'){
         console.log(request.url)
+    }
+    else if(request.action === 'addSongsToBasket'){
+        addCheckedSongsToBasket();
     }
 });
