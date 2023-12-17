@@ -154,6 +154,7 @@ async function addCheckedSongsToBasket(){
         const songData = await response.json();
 
         const song = {
+            id: songData.id,
             imageUrl: songData.album.images[0].url,
             name: songData.name,
             artist: songData.artists.map(artist => artist.name)
@@ -163,6 +164,38 @@ async function addCheckedSongsToBasket(){
         songs.push(song);
     }
     chrome.runtime.sendMessage({ action: "addSongsToBasketReturn", checkedSongs: songs });
+}
+
+async function addSongsToPlaylist(request){
+    let songs = [];
+
+    try {
+        // Wait for the promise to resolve before continuing
+        const result = await new Promise((resolve) => {
+            chrome.storage.local.get(["songs"], resolve);
+        });
+
+        songs = result.songs || [];
+    } catch (error) {
+        console.error("Error retrieving songs from storage:", error);
+    }
+
+    const trackUris = songs.map(song => `spotify:track:${song.id}`);
+    const playlist_id = request.url.split("/")[4];
+
+    await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localAccessToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            uris: trackUris,
+            position: 0
+        }),
+    });
+
+    chrome.runtime.sendMessage({ action: "clearBasket"});
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -178,5 +211,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     else if(request.action === 'addSongsToBasket'){
         addCheckedSongsToBasket();
+    }
+    else if(request.action === 'addSongsToPlaylist'){
+        addSongsToPlaylist(request);
     }
 });
