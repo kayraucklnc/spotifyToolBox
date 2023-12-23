@@ -198,6 +198,78 @@ async function addSongsToPlaylist(request){
     chrome.runtime.sendMessage({ action: "clearBasket"});
 }
 
+async function removeDuplicates(request) {
+    const playlist_id = request.url.split("/")[4];
+    const playlist = await getPlaylist(localAccessToken, playlist_id);
+    const snapshot_id = playlist.snapshot_id;
+    const playlistTrackIDs = playlist.tracks.items.map(track => track.track.id);
+    console.log(playlistTrackIDs);
+
+    let duplicateTrackIDs = playlistTrackIDs.filter((item, index) => playlistTrackIDs.indexOf(item) !== index);
+    let uniqueSet = new Set(duplicateTrackIDs);
+    duplicateTrackIDs = Array.from(uniqueSet);
+    console.log(duplicateTrackIDs);
+
+    let trackUris = duplicateTrackIDs.map(trackId => `spotify:track:${trackId}`);
+
+    await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localAccessToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            tracks: trackUris.map(trackUri => ({ uri: trackUri })),
+            snapshot_id: snapshot_id
+        }),
+    });
+
+    const delayTime = 2000;
+    await new Promise(resolve => setTimeout(resolve, delayTime));
+
+    await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localAccessToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            uris: trackUris,
+            position: 0
+        }),
+    });
+
+    window.location.reload();
+}
+
+async function getRecursiveRelations(artistID, depth, itemCount, artistList) {
+    if (depth <= 0) {
+        return artistList;
+    }
+
+    console.log("Request geldi depth: ", depth);
+
+    let response = await fetch(`https://api.spotify.com/v1/artists/${artistID}/related-artists`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localAccessToken}`,
+        },
+    });
+
+    response = await response.json();
+    const relatedArtists = response.artists;
+
+    for (let i = 0; i < itemCount; i++) {
+        artistList.push(relatedArtists[i]);
+    }
+
+    for (let i = 0; i < itemCount; i++) {
+        const res = await getRecursiveRelations(relatedArtists[i].id, depth - 1, itemCount, artistList);
+        // console.log("Result: ", res);
+    }
+    return artistList;
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(request.action);
     if (request.action === 'downloadJson') {
@@ -214,5 +286,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     else if(request.action === 'addSongsToPlaylist'){
         addSongsToPlaylist(request);
+        window.location.reload();
+    }
+    else if(request.action === 'removeDuplicates'){
+        removeDuplicates(request);
+    }
+    else if (request.action === 'getRecursiveRelations') {
+        const artistID = request.url.split("/")[4];
+        getRecursiveRelations(artistID, 3, 1, []).then((artistList) => {
+            console.log(artistList.map(artist => artist.name));
+        });
     }
 });
