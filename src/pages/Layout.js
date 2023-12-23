@@ -3,6 +3,7 @@ import Navigation from "../components/Navigation";
 import Login from "./Login";
 import Home from "./HomePage";
 import PlaylistTab from "./Playlist/PlaylistTab";
+import ArtistTab from "./Artist/ArtistTab";
 
 const Layout = () => {
     const [currentTab, setCurrentTab] = useState("home")
@@ -12,7 +13,7 @@ const Layout = () => {
             {currentTab === "home" && <Home/>}
             {currentTab === "user" && <div/>}
             {currentTab === "playlist" && <PlaylistTab/>}
-            {currentTab === "artist" && <div/>}
+            {currentTab === "artist" && <ArtistTab/>}
         </div>
     );
 };
