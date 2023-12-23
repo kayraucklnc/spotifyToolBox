@@ -1,10 +1,11 @@
 @import "../index.css";
-a {
-    border:none;
+
+.spotify-button {
+    border: none;
     outline: none;
     display: inline-block;
     margin: 15px;
-    padding:15px 20px;
+    padding: 15px 20px;
     color: #191414;
     background-color: #1db954;
     border-radius: 20px;
@@ -15,10 +16,11 @@ a {
     cursor: pointer;
 }
 
-a:hover {
+.spotify-button:hover {
     transform: scale(1.03);
 }
-.login{
+
+.login {
     display: flex;
     flex-direction: column;
     align-items: center;
