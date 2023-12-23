@@ -20,6 +20,14 @@ function PlaylistTab() {
         setBasketController(!basketController);
     }
 
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        if (request.action === 'addSongsToBasketReturn') {
+            console.log(request.checkedSongs);
+            setSongs(songs.concat(request.checkedSongs));
+            chrome.storage.local.set({songs: songs.concat(request.checkedSongs)});
+        }
+    });
+
     const playlistToJson = () => {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             const currentUrl = tabs[0].url;
@@ -39,19 +47,20 @@ function PlaylistTab() {
             const currentUrl = tabs[0].url;
             chrome.tabs.sendMessage(tabs[0].id, {action: 'addSongsToBasket'});
         });
-        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-            if (request.action === 'addSongsToBasketReturn') {
-                console.log(request.checkedSongs);
-                setSongs(songs.concat(request.checkedSongs));
-                chrome.storage.local.set({songs: songs.concat(request.checkedSongs)});
-            }
-        });
-
     }
+
+    const getRecursiveRelations = () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+            const currentUrl = tabs[0].url;
+            chrome.tabs.sendMessage(tabs[0].id, { action: 'getRecursiveRelations', url: currentUrl });
+        });
+    }
+
     return (<div><SpotifyButton text="Download playlist" onClick={playlistToJson}/>
         <SpotifyButton text="Delete songs" onClick={deleteSongs}/>
         <SpotifyButton text="Add Songs to Basket" onClick={addSongsToBasket}/>
         <SpotifyButton text={"Song Basket " + songs.length} onClick={showBasket}/>
+        <SpotifyButton text={"Artist Relations"} onClick={getRecursiveRelations}/>
         {basketController && (
             <Basket songsInput={songs} setSongsInput={setSongs}/>
         )}</div>)

@@ -12,6 +12,7 @@ chrome.storage.local.get(["accessToken"]).then(result => {
     console.log(result.accessToken);
     localAccessToken = result.accessToken;
 })
+
 async function getAccessToken() {
     const clientID = '95a834e74870414da4c4fe63d3153de6';
     const clientSecret = 'ee5e6d4f94a04f838119c28e3aabd16a';
@@ -60,7 +61,7 @@ function processTracks(tracks) {
     }));
 }
 
-function downloadAsJSONFile(array){
+function downloadAsJSONFile(array) {
     // Convert array to JSON string
     let jsonString = JSON.stringify(array);
 
@@ -97,15 +98,15 @@ async function downloadPlaylistViaAPI(request) {
     }
 }
 
-function getCheckedSongs(){
+function getCheckedSongs() {
     const songDivs = document.querySelectorAll('div[class="gvLrgQXBFVW6m9MscfFA"]');
     let checkedSongs = [];
 
     songDivs.forEach(function (songDiv) {
         const song = songDiv.querySelector('a.t_yrXoUO3qGsJS4Y6iXX');
-        if(song !== null){
+        if (song !== null) {
             const checkbox = songDiv.querySelector('input[class="checkbox"]');
-            if(checkbox !== null && checkbox.checked){
+            if (checkbox !== null && checkbox.checked) {
                 checkedSongs.push(song.href.split("/")[4]);
             }
         }
@@ -113,7 +114,7 @@ function getCheckedSongs(){
     return checkedSongs;
 }
 
-async function deleteSongsViaAPI(request){
+async function deleteSongsViaAPI(request) {
     const trackIds = getCheckedSongs();
     const trackUris = trackIds.map(trackId => `spotify:track:${trackId}`);
     const playlist_id = request.url.split("/")[4];
@@ -129,22 +130,22 @@ async function deleteSongsViaAPI(request){
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            tracks: trackUris.map(trackUri => ({ uri: trackUri })),
+            tracks: trackUris.map(trackUri => ({uri: trackUri})),
             snapshot_id: snapshot_id
         }),
     });
-    console.log( JSON.stringify({
-        tracks: trackUris.map(trackUri => ({ uri: trackUri })),
+    console.log(JSON.stringify({
+        tracks: trackUris.map(trackUri => ({uri: trackUri})),
         snapshot_id: snapshot_id,
         Authorization: `Bearer ${localAccessToken}`
     }));
 }
 
-async function addCheckedSongsToBasket(){
+async function addCheckedSongsToBasket() {
     const checkedSongs = getCheckedSongs();
     const songs = [];
 
-    for(let i = 0; i < checkedSongs.length; i++){
+    for (let i = 0; i < checkedSongs.length; i++) {
         console.log(checkedSongs[i]);
         const response = await fetch(`https://api.spotify.com/v1/tracks/${checkedSongs[i]}`, {
             headers: {
@@ -163,21 +164,52 @@ async function addCheckedSongsToBasket(){
         console.log(song);
         songs.push(song);
     }
-    chrome.runtime.sendMessage({ action: "addSongsToBasketReturn", checkedSongs: songs });
+    chrome.runtime.sendMessage({action: "addSongsToBasketReturn", checkedSongs: songs});
 }
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+async function getRecursiveRelations(artistID, depth, itemCount, artistList) {
+    if (depth <= 0) {
+        return artistList;
+    }
+
+    console.log("Request geldi depth: ", depth);
+
+    let response = await fetch(`https://api.spotify.com/v1/artists/${artistID}/related-artists`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localAccessToken}`,
+        },
+    });
+
+    response = await response.json();
+    const relatedArtists = response.artists;
+
+    for (let i = 0; i < itemCount; i++) {
+        artistList.push(relatedArtists[i]);
+    }
+
+    for (let i = 0; i < itemCount; i++) {
+        const res = await getRecursiveRelations(relatedArtists[i].id, depth - 1, itemCount, artistList);
+        // console.log("Result: ", res);
+    }
+    return artistList;
+}
+
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log(request.action);
     if (request.action === 'downloadJson') {
         downloadPlaylistViaAPI(request);
-    }
-    else if(request.action === 'deleteSongs'){
+    } else if (request.action === 'deleteSongs') {
         deleteSongsViaAPI(request);
-    }
-    else if(request.action === 'setAccessToken'){
+    } else if (request.action === 'setAccessToken') {
         console.log(request.url)
-    }
-    else if(request.action === 'addSongsToBasket'){
+    } else if (request.action === 'addSongsToBasket') {
         addCheckedSongsToBasket();
+    } else if (request.action === 'getRecursiveRelations') {
+        const artistID = request.url.split("/")[4];
+        getRecursiveRelations(artistID, 3, 1, []).then((artistList) => {
+            console.log(artistList.map(artist => artist.name));
+        });
     }
 });
