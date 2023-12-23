@@ -10,7 +10,18 @@ let localAccessToken = "";
 chrome.storage.local.get(["accessToken"]).then(result => {
     console.log(result.accessToken);
     localAccessToken = result.accessToken;
+
+    fetch('https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg', {
+        headers: {
+            'Authorization': `Bearer ${localAccessToken}`
+        }
+    }).then(data => {
+        if (data.status !== 200){
+            alert("Access token is invalid. Please login again.");
+        }
+    })
 })
+
 async function getAccessToken() {
     const clientID = '95a834e74870414da4c4fe63d3153de6';
     const clientSecret = 'ee5e6d4f94a04f838119c28e3aabd16a';
@@ -297,8 +308,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     else if (request.action === 'getRecursiveRelations') {
         const artistID = request.url.split("/")[4];
-        getRecursiveRelations(artistID, "Start", 5, 16, {}).then((artistList) => {
+        getRecursiveRelations(artistID, "Start", 3, 16, {}).then((artistList) => {
             console.log(artistList);
+            chrome.runtime.sendMessage({ action: "getRecursiveRelationsReturn", artists: artistList });
         });
     }
 });
