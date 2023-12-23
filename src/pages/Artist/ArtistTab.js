@@ -7,12 +7,16 @@ import {useState} from "react";
 const Artist = () => {
 
     const [artists, setArtists] = useState({});
+    const [isLoading, setIsloading] = useState(false);
 
 
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.action === 'getRecursiveRelationsReturn') {
             console.log(request.artists);
+            setIsloading(false);
             setArtists(request.artists);
+        } else if (request.action === 'waitingRecursive') {
+            setIsloading(true);
         }
     });
 
@@ -26,6 +30,7 @@ const Artist = () => {
     return (
         <div>
             <SpotifyButton text={"Artist Relations"} onClick={getRecursiveRelations}/>
+            {isLoading && <p>loading...</p>}
             <div>
                 {Object.keys(artists).length > 0 && Object.keys(artists).map((artist) => (
                     <div>

@@ -254,7 +254,6 @@ async function removeDuplicates(request) {
 }
 
 async function getRecursiveRelations(artistID, artistName, depth, itemCount, relations) {
-    console.log("Depth: ", depth)
     if (depth <= 0) {
         return relations;
     }
@@ -307,10 +306,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         removeDuplicates(request);
     }
     else if (request.action === 'getRecursiveRelations') {
+        chrome.runtime.sendMessage({ action: "waitingRecursive" });
+
         const artistID = request.url.split("/")[4];
-        getRecursiveRelations(artistID, "Start", 3, 16, {}).then((artistList) => {
-            console.log(artistList);
-            chrome.runtime.sendMessage({ action: "getRecursiveRelationsReturn", artists: artistList });
+        const response = fetch(`https://api.spotify.com/v1/artists/${artistID}`, {
+            headers: {
+                'Authorization': `Bearer ${localAccessToken}`
+            }
+        }).then(data => data.json()).then(data => {
+            getRecursiveRelations(artistID, data.name, 3, 16, {}).then((artistList) => {
+                console.log(artistList);
+                chrome.runtime.sendMessage({ action: "getRecursiveRelationsReturn", artists: artistList });
+            });
         });
     }
 });
