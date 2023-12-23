@@ -8,7 +8,6 @@ const Basket = ({ songsInput, setSongsInput }) => {
         setSongsInput(songsInput.filter((song, i) => i !== index));
         chrome.storage.local.set({songs: songsInput.filter((song, i) => i !== index)});
     }
-
     return (
         <div className="basket">
             <ul>
@@ -26,5 +25,4 @@ const Basket = ({ songsInput, setSongsInput }) => {
         </div>
     );
 };
-
 export default Basket;

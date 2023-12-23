@@ -1,29 +1,24 @@
 /*global chrome*/
 import React, {useEffect, useState} from 'react';
 import SpotifyWebApi from "spotify-web-api-js";
-import LoginButton from "./components/Login";
+import Login from "./pages/Login";
+import Home from "./pages/HomePage";
 import SpotifyButton from "./components/SpotifyButton";
+import PlaylistTab from "./pages/Playlist/PlaylistTab";
+import Layout from "./pages/Layout";
 
 const Spotify = () => {
     const spotify = new SpotifyWebApi();
     const [spotifyToken, setSpotifyToken] = useState("");
     const [spotifyUser, setSpotifyUser] = useState("");
-    const [id, setId] = useState(0)
-    const [username, setUsername] = useState('')
-    const [playlists, setPlaylists] = useState([])
-    const [songs, setSongs] = useState([])
-    const [token, setToken] = useState(null)
-
-
     const [accessToken, setAccessToken] = useState("");
     const [showLogout, setShowLogout] = useState(false);
 
     const user = {
-        id: id,
-        username: username,
-        playlists: playlists,
-        songs: songs,
-        token: token,
+       // username: username,
+       // playlists: playlists,
+       // songs: songs,
+       // token: token,
         spotifyToken: spotifyToken,
         spotifyUser: spotifyUser
     }
@@ -31,7 +26,7 @@ const Spotify = () => {
     useEffect(() => {
         chrome.storage.local.get(["accessToken"]).then(result => {
             console.log(result.accessToken);
-            if(result.accessToken !== undefined){
+            if (result.accessToken !== undefined) {
                 setAccessToken(result.accessToken);
                 setShowLogout(true);
             }
@@ -64,8 +59,8 @@ const Spotify = () => {
                 console.log("Me: ", user)
             })
 
-            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, { action: 'token', url: _spotifyToken });
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {action: 'token', url: _spotifyToken});
             });
         }
 
@@ -80,7 +75,7 @@ const Spotify = () => {
 
     console.log(accessToken);
 
-    function logout(){
+    function logout() {
         chrome.storage.local.clear();
         setAccessToken("");
         setShowLogout(false)
@@ -88,13 +83,9 @@ const Spotify = () => {
 
     return (
         <div>
-            {accessToken === "" && (
-                <div>
-                    <LoginButton/>
-                </div>
-            )}
+            {accessToken === "" ? <Login/> : <Layout/>}
             {showLogout && (
-                <SpotifyButton text="Log out" onClick={logout}/>
+                <SpotifyButton className="spotify-button" text="Log out" onClick={logout}/>
             )}
         </div>
     );

@@ -3,7 +3,7 @@ import "../style/components/Login.css";
 import "../style/components/logos.css";
 import {useState} from "react";
 
-function LoginButton() {
+function Login() {
 
     const clientId = 'c9c3145563c64380abab5d1ee47fdd09';
     const redirectUri = 'https://open.spotify.com/';
@@ -34,11 +34,11 @@ function LoginButton() {
             <div className="spotify-logo"/>
             <h2>Welcome to Spotify Toolbox!</h2>
             <p>Press the button to login and unlock the features!</p>
-            <a onClick={handleLogin}>
+            <a onClick={handleLogin} className="spotify-button">
                 Login with Spotify
             </a>
         </div>
     )
 }
 
-export default LoginButton;
+export default Login;
