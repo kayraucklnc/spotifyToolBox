@@ -242,12 +242,11 @@ async function removeDuplicates(request) {
     window.location.reload();
 }
 
-async function getRecursiveRelations(artistID, depth, itemCount, artistList) {
+async function getRecursiveRelations(artistID, artistName, depth, itemCount, relations) {
+    console.log("Depth: ", depth)
     if (depth <= 0) {
-        return artistList;
+        return relations;
     }
-
-    console.log("Request geldi depth: ", depth);
 
     let response = await fetch(`https://api.spotify.com/v1/artists/${artistID}/related-artists`, {
         method: 'GET',
@@ -259,15 +258,20 @@ async function getRecursiveRelations(artistID, depth, itemCount, artistList) {
     response = await response.json();
     const relatedArtists = response.artists;
 
-    for (let i = 0; i < itemCount; i++) {
-        artistList.push(relatedArtists[i]);
+    curItemCount = Math.ceil(2*itemCount/3);
+    for (let i = 0; i < curItemCount; i++) {
+        if (relations[artistName] == null){
+            relations[artistName] = [relatedArtists[i].name]
+        } else {
+            relations[artistName].push(relatedArtists[i].name);
+        }
     }
 
-    for (let i = 0; i < itemCount; i++) {
-        const res = await getRecursiveRelations(relatedArtists[i].id, depth - 1, itemCount, artistList);
+    for (let i = 0; i < curItemCount; i++) {
+        const res = await getRecursiveRelations(relatedArtists[i].id, relatedArtists[i].name, depth - 1, curItemCount, relations);
         // console.log("Result: ", res);
     }
-    return artistList;
+    return relations;
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -293,8 +297,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     else if (request.action === 'getRecursiveRelations') {
         const artistID = request.url.split("/")[4];
-        getRecursiveRelations(artistID, 3, 1, []).then((artistList) => {
-            console.log(artistList.map(artist => artist.name));
+        getRecursiveRelations(artistID, "Start", 5, 16, {}).then((artistList) => {
+            console.log(artistList);
         });
     }
 });
