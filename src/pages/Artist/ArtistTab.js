@@ -6,9 +6,9 @@ import SpotifyButton from "../../components/SpotifyButton";
 const Artist = () => {
 
     const getRecursiveRelations = () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             const currentUrl = tabs[0].url;
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'getRecursiveRelations', url: currentUrl });
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'getRecursiveRelations', url: currentUrl});
         });
     }
 
