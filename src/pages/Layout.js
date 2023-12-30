@@ -8,7 +8,7 @@ import ArtistTab from "./Artist/ArtistTab";
 const Layout = () => {
     const [currentTab, setCurrentTab] = useState("home")
     return (
-        <div>
+        <div className="layout-container">
             <Navigation currentTab={currentTab} setCurrentTab={setCurrentTab}/>
             {currentTab === "home" && <Home/>}
             {currentTab === "user" && <div/>}
