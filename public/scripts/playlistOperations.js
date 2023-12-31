@@ -323,6 +323,40 @@ async function getRecursiveRelations(
   return relations;
 }
 
+
+async function getCurrentlyPlayingTrack() {
+  try {
+    const response = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+      headers: {
+        Authorization: `Bearer ${localAccessToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      return {
+        success: true,
+        currentlyPlayingTrack: {
+          title: data.item.name,
+          artist: data.item.artists.map(artist => artist.name).join(", "),
+          imageUrl:data.item.album.images[0].url
+        },
+      };
+    } else {
+      return {
+        success: false,
+        error: "No currently playing track",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: "Error fetching currently playing track",
+    };
+  }
+}
+
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request.action);
   if (request.action === "downloadJson") {
@@ -359,5 +393,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           }
         );
       });
+  } else if (request.action === 'getCurrentlyPlayingTrack') {
+    getCurrentlyPlayingTrack().then(response => sendResponse(response));
+    return true;
   }
 });
