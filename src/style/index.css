@@ -131,7 +131,12 @@ h1, h2, h3, p {
     align-items: center;
     margin-bottom: 15px;
     padding: 8px;
+    display: flex;
+    justify-content: space-between;
 
+}
+.icon-container {
+    margin-left: auto;
 }
 
 .song-item:hover {
@@ -165,15 +170,13 @@ h1, h2, h3, p {
 
 .remove-song {
     background-color: transparent;
-    color: #ffffff;
+    color: #b3b3b3;
     border: none;
-    padding: 8px 15px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s;
 }
 
 .remove-song:hover {
-    background-color: #25a165;
+   color: #ffffff;
 }

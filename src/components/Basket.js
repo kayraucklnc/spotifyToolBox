@@ -1,6 +1,9 @@
 /*global chrome*/
 
 import React from 'react';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
+
 
 const Basket = ({songsInput, setSongsInput}) => {
 
@@ -24,7 +27,10 @@ const Basket = ({songsInput, setSongsInput}) => {
                                 <p className="artist">{song.artist}</p>
                               </span>
                         </div>
-                            <i className="remove-song fa-light fa-trash" onClick={() => removeSong(index)}></i>
+
+                        <div className="icon-container">
+                            <a><FontAwesomeIcon icon={faTrash} className="remove-song" onClick={() => removeSong(index)} /></a>
+                        </div>
                     </div>
                 ))}
             </ul>
