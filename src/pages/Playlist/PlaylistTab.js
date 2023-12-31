@@ -52,23 +52,23 @@ function PlaylistTab() {
     }
 
     const removeDuplicates = () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             const currentUrl = tabs[0].url;
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'removeDuplicates', url: currentUrl });
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'removeDuplicates', url: currentUrl});
         });
     }
 
     const addSongsToPlaylist = () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             const currentUrl = tabs[0].url;
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'addSongsToPlaylist', url: currentUrl });
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'addSongsToPlaylist', url: currentUrl});
         });
     }
 
 
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        if(request.action === 'clearBasket'){
-            chrome.storage.local.remove("songs", function() {
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        if (request.action === 'clearBasket') {
+            chrome.storage.local.remove("songs", function () {
                 setSongs([]);
             });
         }
