@@ -296,7 +296,7 @@ async function getRecursiveRelations(
   response = await response.json();
   const relatedArtists = response.artists;
 
-  curItemCount = Math.ceil((3 * itemCount) / 4);
+  curItemCount = Math.ceil((4 * itemCount) / 5);
   for (let i = 0; i < curItemCount; i++) {
     let toAdd = {
       name: relatedArtists[i].name,
@@ -383,7 +383,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     })
       .then((data) => data.json())
       .then((data) => {
-        getRecursiveRelations(artistID, data.name, 4, 20, {}).then(
+        getRecursiveRelations(artistID, data.name, 3, 20, {}).then(
           (artistList) => {
             console.log(artistList);
             chrome.runtime.sendMessage({

@@ -4,6 +4,8 @@ import React from "react";
 import SpotifyButton from "../../components/SpotifyButton";
 import { useState } from "react";
 import ForceField from "../ForceField";
+import ForceDirectedGraph from "../ForceDirectedGraph";
+
 
 const Artist = () => {
   const [artists, setArtists] = useState({});
@@ -40,7 +42,8 @@ const Artist = () => {
         onClick={getRecursiveRelations}
       />
       {isLoading && <p>loading...</p>}
-      {Object.keys(artists).length > 0 && <ForceField data={artists} />}
+      {/*{Object.keys(artists).length > 0 && <ForceField data={artists} />}*/}
+      {Object.keys(artists).length > 0 && <ForceDirectedGraph musicData={artists} />}
     </div>
   );
 };
