@@ -148,7 +148,6 @@ h1, h2, h3, p {
     align-items: center;
     margin-bottom: 15px;
     padding: 8px;
-    display: flex;
     justify-content: space-between;
 
 }
@@ -254,7 +253,6 @@ h1, h2, h3, p {
     background-color: #282828;
     border-radius: 8px;
     display: flex;
-    align-items: center;
     margin-bottom: 15px;
     padding: 8px;
 
