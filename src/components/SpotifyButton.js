@@ -14,9 +14,9 @@ const buttonStyle = {
     margin: 15,
 };
 
-const SpotifyButton = ({ text, onClick }) => {
+const SpotifyButton = ({ text, onClick, disable }) => {
     return (
-        <button style={buttonStyle} onClick={onClick}>
+        <button style={buttonStyle} onClick={onClick} disabled={disable}>
             {text}
         </button>
     );
