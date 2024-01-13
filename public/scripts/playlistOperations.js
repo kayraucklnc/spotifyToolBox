@@ -323,37 +323,90 @@ async function removeDuplicates(request) {
     window.location.reload();
 }
 
-async function getRecursiveRelations(artistID, artistName, depth, itemCount, relations) {
-    console.log("Depth: ", depth)
-    if (depth <= 0) {
-        return relations;
-    }
+async function getRecursiveRelations(
+  artistID,
+  artistName,
+  depth,
+  itemCount,
+  relations
+) {
+  if (depth <= 0) {
+    return relations;
+  }
 
-    let response = await fetch(`https://api.spotify.com/v1/artists/${artistID}/related-artists`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localAccessToken}`,
-        },
+  let response = await fetch(
+    `https://api.spotify.com/v1/artists/${artistID}/related-artists`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localAccessToken}`,
+      },
+    }
+  );
+
+  response = await response.json();
+  const relatedArtists = response.artists;
+
+  curItemCount = Math.ceil((4 * itemCount) / 5);
+  for (let i = 0; i < curItemCount; i++) {
+    let toAdd = {
+      name: relatedArtists[i].name,
+      followers: relatedArtists[i].followers.total,
+      popularity: relatedArtists[i].popularity,
+    };
+    if (relations[artistName] == null) {
+      relations[artistName] = [toAdd];
+    } else {
+      relations[artistName].push(toAdd);
+    }
+  }
+
+  for (let i = 0; i < curItemCount; i++) {
+    const res = await getRecursiveRelations(
+      relatedArtists[i].id,
+      relatedArtists[i].name,
+      depth - 1,
+      curItemCount,
+      relations
+    );
+    // console.log("Result: ", res);
+  }
+  return relations;
+}
+
+
+async function getCurrentlyPlayingTrack() {
+  try {
+    const response = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+      headers: {
+        Authorization: `Bearer ${localAccessToken}`,
+      },
     });
 
-    response = await response.json();
-    const relatedArtists = response.artists;
-
-    const curItemCount = Math.ceil(2 * itemCount / 3);
-    for (let i = 0; i < curItemCount; i++) {
-        if (relations[artistName] == null) {
-            relations[artistName] = [relatedArtists[i].name]
-        } else {
-            relations[artistName].push(relatedArtists[i].name);
-        }
+    if (response.status === 200) {
+      const data = await response.json();
+      return {
+        success: true,
+        currentlyPlayingTrack: {
+          title: data.item.name,
+          artist: data.item.artists.map(artist => artist.name).join(", "),
+          imageUrl:data.item.album.images[0].url
+        },
+      };
+    } else {
+      return {
+        success: false,
+        error: "No currently playing track",
+      };
     }
-
-    for (let i = 0; i < curItemCount; i++) {
-        const res = await getRecursiveRelations(relatedArtists[i].id, relatedArtists[i].name, depth - 1, curItemCount, relations);
-        // console.log("Result: ", res);
-    }
-    return relations;
+  } catch (error) {
+    return {
+      success: false,
+      error: "Error fetching currently playing track",
+    };
+  }
 }
+
 
 async function compareSongs() {
     const checkedSongs = getCheckedSongs().slice(-2);
@@ -423,29 +476,32 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         addSongsToPlaylist(request);
     } else if (request.action === "addPlaylistsToPlaylist") {
         addPlaylistsToPlaylist(request);
-    } else if (request.action === "removeDuplicates") {
-        removeDuplicates(request);
-    } else if (request.action === "getRecursiveRelations") {
-        chrome.runtime.sendMessage({action: "waitingRecursive"});
+  } else if (request.action === "removeDuplicates") {
+    removeDuplicates(request);
+  } else if (request.action === "getRecursiveRelations") {
+    chrome.runtime.sendMessage({ action: "waitingRecursive" });
 
-        const artistID = request.url.split("/")[4];
-        const response = fetch(`https://api.spotify.com/v1/artists/${artistID}`, {
-            headers: {
-                Authorization: `Bearer ${localAccessToken}`,
-            },
-        })
-            .then((data) => data.json())
-            .then((data) => {
-                getRecursiveRelations(artistID, data.name, 4, 20, {}).then(
-                    (artistList) => {
-                        console.log(artistList);
-                        chrome.runtime.sendMessage({
-                            action: "getRecursiveRelationsReturn",
-                            artists: artistList,
-                        });
-                    }
-                );
+    const artistID = request.url.split("/")[4];
+    const response = fetch(`https://api.spotify.com/v1/artists/${artistID}`, {
+      headers: {
+        Authorization: `Bearer ${localAccessToken}`,
+      },
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        getRecursiveRelations(artistID, data.name, 3, 20, {}).then(
+          (artistList) => {
+            console.log(artistList);
+            chrome.runtime.sendMessage({
+              action: "getRecursiveRelationsReturn",
+              artists: artistList,
             });
+          }
+        );
+      });
+  } else if (request.action === 'getCurrentlyPlayingTrack') {
+    getCurrentlyPlayingTrack().then(response => sendResponse(response));
+    return true;
     } else if (request.action === "compareSongs") {
         compareSongs();
         getCountriesTopThreeSongs();
