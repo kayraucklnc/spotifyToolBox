@@ -256,3 +256,11 @@ h1, h2, h3, p {
     padding: 8px;
 
 }
+
+.p-dialog-header-icon {
+    color: #D6D6DA;
+}
+
+.p-progress-spinner {
+    animation-duration: 1s;
+}
