@@ -125,7 +125,7 @@ function PlaylistTab() {
                 <Basket songsInput={songs} setSongsInput={setSongs}/>
             )}
             <SpotifyButton text="Compare Songs" onClick={compareSongs}/>
-            <SpotifyButton text="World Map" onClick={showWorldMap}/>
+            <SpotifyButton text="Countries' Top 3 Songs" onClick={showWorldMap}/>
             {worldMapController && (<WorldMap/>)}
         </div>
     )

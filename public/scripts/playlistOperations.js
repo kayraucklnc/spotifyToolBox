@@ -441,23 +441,25 @@ async function compareSongs() {
     });
 }
 
-async function getCountriesTopThreeSongs() {
-    const countriesTopThreeSongs = [];
-    for (let i = 0; i < countryPlaylists.length; i++) {
-        let playlistData = await getPlaylist(localAccessToken, countryPlaylists[i].playlistLink.split("/")[2]);
-        const allMusicInfos = playlistData.tracks.items.map(track => ({
-            id: track.track.id,
-            imageUrl: track.track.album.images[0].url,
-            name: track.track.name,
-            artist: track.track.artists.map(artist => artist.name)
-        }));
-        let countryAndTopThreeSongs = {
-            country: countryPlaylists[i].country,
-            songs: allMusicInfos.slice(0, 3)
-        }
-        countriesTopThreeSongs.push(countryAndTopThreeSongs);
+async function getCountriesTopThreeSongs(country) {
+    const countryPlaylistUrl = countryPlaylists.find(countryPlaylist => countryPlaylist.country === country).playlistLink;
+    let playlistData = await getPlaylist(localAccessToken, countryPlaylistUrl.split("/")[2]);
+    playlistData = playlistData.tracks.items.slice(0, 3);
+    const allMusicInfos = playlistData.map(track => ({
+        id: track.track.id,
+        imageUrl: track.track.album.images[0].url,
+        name: track.track.name,
+        artist: track.track.artists.map(artist => artist.name + " "),
+        url: track.track.external_urls.spotify
+    }));
+
+    const top3Songs = {
+        country: country,
+        songs: allMusicInfos,
+        url: countryPlaylistUrl
     }
-    console.log(countriesTopThreeSongs);
+
+    chrome.runtime.sendMessage({action: "top3SongsReturn", top3Songs: top3Songs});
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -504,7 +506,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
     } else if (request.action === "compareSongs") {
         compareSongs();
-        getCountriesTopThreeSongs();
+    }
+    else if (request.action === "getCountriesTopThreeSongs") {
+        getCountriesTopThreeSongs(request.country);
     }
 });
 
@@ -533,7 +537,7 @@ const countryPlaylists = [
 
     {country: 'Costa Rica', playlistLink: '/playlist/37i9dQZEVXbMZAjGMynsQX'},
 
-    {country: 'Czech Republic', playlistLink: '/playlist/37i9dQZEVXbIP3c3fqVrJY'},
+    {country: 'Czechia', playlistLink: '/playlist/37i9dQZEVXbIP3c3fqVrJY'},
 
     {country: 'Denmark', playlistLink: '/playlist/37i9dQZEVXbL3J0k32lWnN'},
 
