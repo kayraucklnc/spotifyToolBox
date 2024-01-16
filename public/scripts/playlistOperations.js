@@ -413,14 +413,14 @@ async function compareSongs() {
 
     console.log(checkedSongs);
 
-    const songDatas = [];
-
-    checkedSongs.map(trackID => {
-        getSongDataFromSpotify(trackID)
+    const songDataPromises = checkedSongs.map(trackID => {
+        return getSongDataFromSpotify(trackID)
             .then(data => {
                 console.log(trackID);
                 let songData = {
                     id: trackID,
+                    imageUrl: '',
+                    name: '',
                     duration: `${Math.floor(data.duration_ms / 1000 / 60)}:${Math.floor(data.duration_ms / 1000 % 60)}`,
                     danceability: mapDanceability(data.danceability),
                     energy: mapEnergy(data.energy),
@@ -431,14 +431,40 @@ async function compareSongs() {
                     liveness: mapLiveness(data.liveness),
                     valence: mapValence(data.valence)
                 }
-                songDatas.push(songData);
-                console.log(songData);
+                return songData; // Şarkı verisini döndür
             })
             .catch(error => {
                 console.error('Error: ', error);
             });
-        console.log(songDatas);
     });
+
+    Promise.all(songDataPromises)
+        .then(fullSongDatas => {
+            const additionalInfoPromises = fullSongDatas.map((songData, index) => {
+                return fetch(`https://api.spotify.com/v1/tracks/${songData.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localAccessToken}`
+                    }
+                })
+                    .then(response => response.json())
+                    .then(songInfo => {
+                        songData.name = songInfo.name;
+                        songData.imageUrl = songInfo.album.images[0].url;
+                        return songData; // Güncellenmiş şarkı verisini döndür
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                    });
+            });
+
+            return Promise.all(additionalInfoPromises); // Tüm ek bilgilerin alınmasını bekle
+        })
+        .then(completeSongDatas => {
+            chrome.runtime.sendMessage({ action: "songComparisonReturn", songDatas: completeSongDatas });
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+        });
 }
 
 async function getCountriesTopThreeSongs(country) {
