@@ -1,7 +1,9 @@
+/* global chrome */
 import React, { useState, useEffect } from "react";
 import { ZoomableGroup, ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import SpotifyButton from "../../components/SpotifyButton";
 
 // Dünya haritasının topoJSON URL'si
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
@@ -10,6 +12,8 @@ const WorldMap = () => {
     const [selectedCountry, setSelectedCountry] = useState("");
     const [dialogVisible, setDialogVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [hoveredCountry, setHoveredCountry] = useState("-");
+    const [top3Songs, setTop3Songs] = useState({country: "", songs: [], url: ""});
 
     const countryPlaylists = [
         {country: 'Argentina', playlistLink: '/playlist/37i9dQZEVXbMMy2roB9myp'},
@@ -36,7 +40,7 @@ const WorldMap = () => {
 
         {country: 'Costa Rica', playlistLink: '/playlist/37i9dQZEVXbMZAjGMynsQX'},
 
-        {country: 'Czech Republic', playlistLink: '/playlist/37i9dQZEVXbIP3c3fqVrJY'},
+        {country: 'Czechia', playlistLink: '/playlist/37i9dQZEVXbIP3c3fqVrJY'},
 
         {country: 'Denmark', playlistLink: '/playlist/37i9dQZEVXbL3J0k32lWnN'},
 
@@ -161,17 +165,28 @@ const WorldMap = () => {
         if (dialogVisible) {
             const timer = setTimeout(() => {
                 setIsLoading(false);
-            }, 2000); // 2 saniye sonra isLoading'i false yap
+            }, 1500); // 1.5 saniye sonra isLoading'i false yap
 
             return () => clearTimeout(timer); // Unmount edildiğinde timer'ı temizle
         }
     }, [dialogVisible]);
+
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        if (request.action === 'top3SongsReturn') {
+            console.log(request.top3Songs);
+            setTop3Songs(request.top3Songs);
+        }
+    });
 
     const isCountryInList = (countryName) => {
         return countryPlaylists.some(playlist => playlist.country === countryName);
     };
 
     const handleCountryClick = (countryName) => {
+        console.log("clicked" + countryName)
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {action: 'getCountriesTopThreeSongs', country: countryName});
+        });
         setSelectedCountry(countryName);
         setDialogVisible(true);
         setIsLoading(true);
@@ -182,9 +197,18 @@ const WorldMap = () => {
         setIsLoading(true); // Dialog kapatıldığında yükleme durumunu sıfırla
     };
 
+    const handleMouseEnter = (countryName) => {
+        setHoveredCountry(countryName);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredCountry("-");
+    };
+
     return (
         <div>
             <h3>Countries' Top 3 Songs</h3>
+            <h4>{hoveredCountry}</h4>
             <ComposableMap>
                 <ZoomableGroup>
                     <Geographies geography={geoUrl}>
@@ -194,13 +218,15 @@ const WorldMap = () => {
                                     key={geo.rsmKey}
                                     geography={geo}
                                     onClick={() => {isCountryInList(geo.properties.name) && handleCountryClick(geo.properties.name)}}
+                                    onMouseEnter={() => handleMouseEnter(geo.properties.name)}
+                                    onMouseLeave={handleMouseLeave}
                                     style={{
                                         default: { fill: isCountryInList(geo.properties.name) ? "#1DB954" : "#D6D6DA"},
                                         hover: isCountryInList(geo.properties.name)
-                                            ? { fill: "#238E47" }
+                                            ? { fill: "#114623" }
                                             : {},
                                         pressed: isCountryInList(geo.properties.name)
-                                            ? { fill: "#238E47" }
+                                            ? { fill: "#114623" }
                                             : {}
                                     }}
                                 />
@@ -213,14 +239,31 @@ const WorldMap = () => {
             <Dialog
                 header={"Top 3 Songs - " + selectedCountry}
                 visible={dialogVisible}
-                style={{border: '1px solid #D6D6DA', height: '30%', width: '80%', backgroundColor: '#212121', padding: '10px'}}
+                style={{border: '1px solid #D6D6DA', borderRadius: '8px', height: '70%',
+                    width: '80%', backgroundColor: '#212121', padding: '10px'}}
                 onHide={hideDialog}
             >
                 {isLoading
                     ? <ProgressSpinner aria-label="Getting Songs" style={{width: '30px', height: '30px', marginTop: '20%'}}/>
                     : (
                         <div>
-                            <p>{`Selected country: ${selectedCountry}`}</p>
+                            {top3Songs.songs.map((song, index) => (
+                                <div key={index} className="song-item" style={{justifyContent: 'start'}}>
+                                    <span className="song-number">{index + 1}</span>
+                                    <img className="song-img" src={song.imageUrl} alt={`${song.name} cover`} width="40"
+                                         height="40"/>
+                                    <div className="song-details">
+                                        <div>
+                                            <p className="song-name">{song.name}</p>
+                                            <p className="artist">{song.artist}</p>
+                                        </div>
+                                    </div>
+                                    <SpotifyButton text="View" onClick={() => window.open(song.url, "_blank")}/>
+                                </div>
+                            ))}
+                            <div>
+                                <SpotifyButton text="Discover the remaining songs on Spotify" onClick={() => window.open("https://open.spotify.com" + top3Songs.url, "_blank")}/>
+                            </div>
                         </div>
                     )
                 }
