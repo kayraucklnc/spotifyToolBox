@@ -3,6 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import SpotifyButton from "../../components/SpotifyButton";
 import Basket from "../../components/Basket";
+import SongComparison from "../../components/SongComparison";
 import WorldMap from "./WorldMap";
 
 
@@ -10,6 +11,7 @@ function PlaylistTab() {
     const [songs, setSongs] = useState([]);
     const [basketController, setBasketController] = useState(false);
     const [worldMapController, setWorldMapController] = useState(false);
+    const [songComparisonController, setSongComparisonController] = useState(false);
 
     useEffect(() => {
         chrome.storage.local.get(["songs"], function (result) {
@@ -102,9 +104,15 @@ function PlaylistTab() {
     });
 
     const compareSongs = () => {
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {action: 'compareSongs'});
-        });
+        if(songComparisonController === false) {
+            setSongComparisonController(true);
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {action: 'compareSongs'});
+            });
+        }
+        else {
+            setSongComparisonController(false);
+        }
     }
 
     const showWorldMap = () => {
@@ -125,6 +133,7 @@ function PlaylistTab() {
                 <Basket songsInput={songs} setSongsInput={setSongs}/>
             )}
             <SpotifyButton text="Compare Songs" onClick={compareSongs}/>
+            {songComparisonController && (<SongComparison/>)}
             <SpotifyButton text="Countries' Top 3 Songs" onClick={showWorldMap}/>
             {worldMapController && (<WorldMap/>)}
         </div>
