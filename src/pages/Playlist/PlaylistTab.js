@@ -120,22 +120,42 @@ function PlaylistTab() {
     }
 
     return (
-        <div>
-            <SpotifyButton text="Download playlist" onClick={playlistToJson}/>
-            <SpotifyButton text="Delete songs" onClick={deleteSongs}/>
-            <SpotifyButton text="Remove Duplicate Songs" onClick={removeDuplicates}/>
-            <SpotifyButton text="Add Songs to Basket" onClick={addSongsToBasket}/>
-            <SpotifyButton text="Add Playlist to Basket" onClick={addPlaylistToBasket}/>
-            <SpotifyButton text="Add Songs to Playlist" onClick={addSongsToPlaylist}/>
-            <SpotifyButton text="Add Playlists to Playlist" onClick={addPlaylistsToPlaylist}/>
-            <SpotifyButton text={"Basket " + songs.length} onClick={showBasket}/>
-            {basketController && (
-                <Basket songsInput={songs} setSongsInput={setSongs}/>
-            )}
-            <SpotifyButton text="Compare Songs" onClick={compareSongs}/>
-            {songComparisonController && (<SongComparison/>)}
-            <SpotifyButton text="Countries' Top 3 Songs" onClick={showWorldMap}/>
-            {worldMapController && (<WorldMap/>)}
+        <div className="grid">
+            <div className="col-6 no-pd">
+                <SpotifyButton text="Add Songs to Basket" onClick={addSongsToBasket}/>
+            </div>
+            <div className="col-6 no-pd">
+                <SpotifyButton text="Add Playlist to Basket" onClick={addPlaylistToBasket}/>
+            </div>
+            <div className="col-6 no-pd">
+                <SpotifyButton text="Add Songs to Playlist" onClick={addSongsToPlaylist}/>
+            </div>
+            <div className="col-6 no-pd">
+                <SpotifyButton text="Combine Playlists" onClick={addPlaylistsToPlaylist}/>
+            </div>
+            <div className="col-12">
+                <SpotifyButton text={"Basket " + songs.length} onClick={showBasket}/>
+                {basketController && (<Basket songsInput={songs} setSongsInput={setSongs}/>)}
+            </div>
+            <div className="col-6 no-pd">
+                <SpotifyButton text="Delete songs" onClick={deleteSongs}/>
+            </div>
+            <div className="col-6 pt-0 pb-0 pl-o pd-2">
+                <SpotifyButton text="Remove Duplicate Songs" onClick={removeDuplicates}/>
+            </div>
+            <div className="col-6 no-pd">
+                <SpotifyButton text="Download playlist" onClick={playlistToJson}/>
+            </div>
+            <div className="col-6 no-pd">
+                <SpotifyButton text="Compare Songs" onClick={compareSongs}/>
+            </div>
+            <div className="col-12">
+                {songComparisonController && (<SongComparison/>)}
+            </div>
+            <div className="col-12">
+                <SpotifyButton text="Countries' Top 3 Songs" onClick={showWorldMap}/>
+                {worldMapController && (<WorldMap/>)}
+            </div>
         </div>
     )
 }
