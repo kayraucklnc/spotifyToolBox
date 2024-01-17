@@ -1,3 +1,5 @@
+@import '~primeflex/primeflex.css';
+
 @font-face {
     font-family: Spotify Circular Light;
     src: url('/public/fonts/CircularSpUIv3T-Light.woff2');
@@ -263,4 +265,8 @@ h1, h2, h3, p {
 
 .p-progress-spinner {
     animation-duration: 1s;
+}
+
+.no-pd{
+    padding: 0;
 }
