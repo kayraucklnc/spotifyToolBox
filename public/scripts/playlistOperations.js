@@ -421,6 +421,7 @@ async function compareSongs() {
                     id: trackID,
                     imageUrl: '',
                     name: '',
+                    popularity: '',
                     duration: `${Math.floor(data.duration_ms / 1000 / 60)}:${Math.floor(data.duration_ms / 1000 % 60)}`,
                     danceability: mapDanceability(data.danceability),
                     energy: mapEnergy(data.energy),
@@ -450,6 +451,7 @@ async function compareSongs() {
                     .then(songInfo => {
                         songData.name = songInfo.name;
                         songData.imageUrl = songInfo.album.images[0].url;
+                        songData.popularity = mapPopularity(songInfo.popularity);
                         return songData; // Güncellenmiş şarkı verisini döndür
                     })
                     .catch(error => {
