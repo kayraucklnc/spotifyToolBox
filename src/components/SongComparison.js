@@ -64,7 +64,7 @@ const SongComparison = () => {
                                             <p>{songComparison[0].duration}</p>
                                         </td>
                                         <td>
-                                            <p>Duration</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Duration</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].duration}</p>
@@ -72,10 +72,21 @@ const SongComparison = () => {
                                     </tr>
                                     <tr>
                                         <td>
+                                            <p>{songComparison[0].popularity}</p>
+                                        </td>
+                                        <td>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Popularity</p>
+                                        </td>
+                                        <td>
+                                            <p >{songComparison[1].popularity}</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
                                             <p>{songComparison[0].danceability}</p>
                                         </td>
                                         <td>
-                                            <p>Danceability</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Danceability</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].danceability}</p>
@@ -86,7 +97,7 @@ const SongComparison = () => {
                                             <p>{songComparison[0].energy}</p>
                                         </td>
                                         <td>
-                                            <p>Energy</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Energy</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].energy}</p>
@@ -97,7 +108,7 @@ const SongComparison = () => {
                                             <p>{songComparison[0].loudness}</p>
                                         </td>
                                         <td>
-                                            <p>Loudness</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Loudness</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].loudness}</p>
@@ -108,7 +119,7 @@ const SongComparison = () => {
                                             <p>{songComparison[0].speechiness}</p>
                                         </td>
                                         <td>
-                                            <p>Speechiness</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Speechiness</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].speechiness}</p>
@@ -119,7 +130,7 @@ const SongComparison = () => {
                                             <p>{songComparison[0].acousticness}</p>
                                         </td>
                                         <td>
-                                            <p>Acousticness</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Acousticness</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].acousticness}</p>
@@ -130,7 +141,7 @@ const SongComparison = () => {
                                             <p>{songComparison[0].instrumentalness}</p>
                                         </td>
                                         <td>
-                                            <p>Instrumentalness</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Instrumentalness</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].instrumentalness}</p>
@@ -141,21 +152,10 @@ const SongComparison = () => {
                                             <p>{songComparison[0].liveness}</p>
                                         </td>
                                         <td>
-                                            <p>Liveness</p>
+                                            <p style={{ fontWeight: 'bold', color: '#1DB954' }}>Liveness</p>
                                         </td>
                                         <td>
                                             <p>{songComparison[1].liveness}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p>{songComparison[0].valence}</p>
-                                        </td>
-                                        <td>
-                                            <p>Valence</p>
-                                        </td>
-                                        <td>
-                                            <p>{songComparison[1].valence}</p>
                                         </td>
                                     </tr>
                                 </tbody>

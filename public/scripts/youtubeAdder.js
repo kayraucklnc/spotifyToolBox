@@ -278,3 +278,19 @@ function mapValence(value) {
         return "High Valence";
     }
 }
+
+function mapPopularity(popularityScore) {
+    if (popularityScore >= 0 && popularityScore <= 20) {
+        return "Very Low Popularity";
+    } else if (popularityScore >= 21 && popularityScore <= 40) {
+        return "Low Popularity";
+    } else if (popularityScore >= 41 && popularityScore <= 60) {
+        return "Moderate Popularity";
+    } else if (popularityScore >= 61 && popularityScore <= 80) {
+        return "High Popularity";
+    } else if (popularityScore >= 81 && popularityScore <= 100) {
+        return "Very High Popularity";
+    } else {
+        return "Invalid Popularity Score";
+    }
+}
