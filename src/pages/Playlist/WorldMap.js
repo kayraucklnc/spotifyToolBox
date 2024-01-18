@@ -221,13 +221,17 @@ const WorldMap = () => {
                                     onMouseEnter={() => handleMouseEnter(geo.properties.name)}
                                     onMouseLeave={handleMouseLeave}
                                     style={{
-                                        default: { fill: isCountryInList(geo.properties.name) ? "#1DB954" : "#D6D6DA"},
+                                        default: {
+                                            fill: isCountryInList(geo.properties.name) ? "#1DB954" : "#D6D6DA",
+                                            stroke: "#212121",
+                                            strokeWidth: 0.5,
+                                        },
                                         hover: isCountryInList(geo.properties.name)
                                             ? { fill: "#114623" }
                                             : {},
                                         pressed: isCountryInList(geo.properties.name)
                                             ? { fill: "#114623" }
-                                            : {}
+                                            : {},
                                     }}
                                 />
                             ))
